@@ -1,0 +1,35 @@
+{
+  "name": "crud-expressjs-typeorm",
+  "version": "0.0.1",
+  "description": "Awesome project developed with TypeORM.",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/multer": "^1.4.11",
+    "@types/node": "^16.11.10",
+    "ts-node": "10.9.1",
+    "typescript": "4.5.2"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.2.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.0",
+    "pg": "^8.11.5",
+    "postgres": "^3.4.4",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "0.3.20",
+    "uuidv4": "^6.2.13"
+  },
+  "scripts": {
+    "start": "nodemon --exec ts-node src/index.ts",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate src/migration/MyMigration -d src/data-source.ts",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts"
+  }
+}
