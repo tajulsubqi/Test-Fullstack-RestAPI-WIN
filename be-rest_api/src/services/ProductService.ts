@@ -95,27 +95,38 @@ export default new (class ProductService {
     }
   }
 
-  //? DELETE
   async deletedProduct(req: Request, res: Response) {
     try {
       const { id } = req.params
 
-      const deleteProduct = await this.ProductRepository.delete({
-        id: Number(id),
+      // Convert ID to number
+      const productId = Number(id)
+      if (isNaN(productId)) {
+        return res.status(400).json({
+          message: "Invalid Product ID",
+        })
+      }
+
+      const product = await this.ProductRepository.findOneBy({
+        id: productId,
         user: res.locals.user,
       })
 
-      // cek apakah product ada atau tidak
-      if (!deleteProduct)
+      if (!product) {
         return res.status(404).json({
-          Message:
+          message:
             "Product Not Found or You do not have permission to delete this product",
         })
-      return res.status(200).json({ Message: "Delete Product Success" })
+      }
+
+      // Proceed to delete the product
+      await this.ProductRepository.delete({ id: productId })
+
+      return res.status(200).json({ message: "Delete Product Success" })
     } catch (error) {
       return res.status(500).json({
-        Message: error.message,
-        Error: "Delete Product Failed",
+        message: error.message,
+        error: "Delete Product Failed",
       })
     }
   }

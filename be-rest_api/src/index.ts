@@ -6,9 +6,12 @@ import { UserRouter } from "./routes/UserRoute"
 AppDataSource.initialize()
   .then(async () => {
     const app = express()
+
+    const cors = require("cors")
     const port = 8000
 
     app.use(express.json())
+    app.use(cors())
     app.use("/api/v1", ProductRouter)
     app.use("/api/v1", UserRouter)
 
