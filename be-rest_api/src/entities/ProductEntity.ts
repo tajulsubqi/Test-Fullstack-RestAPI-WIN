@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { UserEntity } from "./UserEntity"
 
 @Entity({ name: "Products" })
 export class ProductEntity {
@@ -25,4 +26,7 @@ export class ProductEntity {
     default: () => "CURRENT_TIMESTAMP",
   })
   posted_at: Date
+
+  @ManyToOne(() => UserEntity, (user) => user.product)
+  user: UserEntity
 }

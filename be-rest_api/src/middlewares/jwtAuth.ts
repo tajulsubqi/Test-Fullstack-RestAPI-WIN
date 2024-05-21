@@ -5,7 +5,7 @@ import jwt = require("jsonwebtoken")
 dotenv.config()
 
 class AuthMiddleware {
-  Authentication(req: Request, res: Response, next: NextFunction) {
+  AuthenticateToken(req: Request, res: Response, next: NextFunction) {
     try {
       const authHeader = req.header("authorization")
       const secretKey = process.env.JWT_SECRET
@@ -31,4 +31,4 @@ class AuthMiddleware {
   }
 }
 
-export default new AuthMiddleware().Authentication
+export default new AuthMiddleware().AuthenticateToken

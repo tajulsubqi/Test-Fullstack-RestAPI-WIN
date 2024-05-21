@@ -7,7 +7,7 @@ export default new (class ProductService {
   private readonly ProductRepository: Repository<ProductEntity> =
     AppDataSource.getRepository(ProductEntity)
 
-  //? CREATE
+  //? CREATE PRODUCT
   async createProduct(req: Request, res: Response) {
     const { name, description, image, price, stock } = req.body
 
@@ -18,6 +18,7 @@ export default new (class ProductService {
         image,
         price,
         stock,
+        user: res.locals.user,
       })
 
       const saveProduct = await this.ProductRepository.save(newProduct)
@@ -67,7 +68,11 @@ export default new (class ProductService {
       const { id } = req.params
       const { name, description, image, price, stock } = req.body
 
-      const existedProduct = await this.ProductRepository.findOneBy({ id: Number(id) })
+      const existedProduct = await this.ProductRepository.findOneBy({
+        id: Number(id),
+        user: res.locals.user,
+      })
+
       if (!existedProduct) return res.status(404).json({ Message: "Product Not Found" })
 
       // perbarui data
@@ -95,7 +100,17 @@ export default new (class ProductService {
     try {
       const { id } = req.params
 
-      await this.ProductRepository.delete({ id: Number(id) })
+      const deleteProduct = await this.ProductRepository.delete({
+        id: Number(id),
+        user: res.locals.user,
+      })
+
+      // cek apakah product ada atau tidak
+      if (!deleteProduct)
+        return res.status(404).json({
+          Message:
+            "Product Not Found or You do not have permission to delete this product",
+        })
       return res.status(200).json({ Message: "Delete Product Success" })
     } catch (error) {
       return res.status(500).json({

@@ -2,7 +2,6 @@ import * as bcrypt from "bcrypt"
 import { Repository } from "typeorm"
 import { AppDataSource } from "../data-source"
 import { Request, Response } from "express"
-import { v4 as uuid } from "uuid"
 import jwt = require("jsonwebtoken")
 import { UserEntity } from "../entities/UserEntity"
 
@@ -15,15 +14,10 @@ export default new (class UserService {
     try {
       const { name, gender, email, password } = req.body
 
-      //check if username or email already exist in the database
-      const existingUser = await this.userRepository.findOneBy({
-        name,
-        email,
-      })
-
+      const existingUser = await this.userRepository.findOneBy({ email })
       if (existingUser) {
         return res.status(400).json({
-          Message: "Username or Email already exist",
+          Message: "Email already exist",
         })
       }
 
