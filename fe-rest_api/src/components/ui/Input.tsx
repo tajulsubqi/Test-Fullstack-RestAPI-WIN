@@ -1,18 +1,17 @@
+import { InputProps } from "@/app/interface/input"
 import React from "react"
 
-interface Props {
-  type: string
-  label: string
-  placeholder?: string
-  onClick?: () => void
-}
+const Input = (Props: InputProps) => {
+  const { type, label, placeholder, onClick, onChange, value, name, className } = Props
 
-const Input = ({ type, label, placeholder, onClick }: Props) => {
   return (
-    <div>
+    <div className={` ${className}`}>
       <label htmlFor="">{label}</label>
       <input
+        name={name}
+        onChange={onChange}
         onClick={onClick}
+        value={value}
         type={type}
         placeholder={placeholder}
         className="inline-flex justify-between w-full px-4 py-2 border border-slate-400 text-sm font-medium text-slate-500 bg-slate-100 rounded-md  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"

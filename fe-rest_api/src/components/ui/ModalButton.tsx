@@ -3,13 +3,16 @@ import React from "react"
 interface Props {
   label: string
   color: string
-  onClick: () => void
+  className?: string
+  type?: "button" | "submit" | "reset"
+  onClick?: () => void
 }
 
-const ModalButton = ({ label, color, onClick }: Props) => {
+const ModalButton = ({ label, color, type, className, onClick }: Props) => {
   return (
-    <>
+    <div className={` w-full ${className}`}>
       <button
+        type={type}
         onClick={onClick}
         className={`w-full ${
           color === "red"
@@ -21,7 +24,7 @@ const ModalButton = ({ label, color, onClick }: Props) => {
       >
         {label}
       </button>
-    </>
+    </div>
   )
 }
 

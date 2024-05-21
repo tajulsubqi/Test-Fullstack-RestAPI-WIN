@@ -1,8 +1,26 @@
+"use client"
 import ProductCard from "@/components/ProductCard"
 import Sidebar from "@/components/Sidebar"
-import React from "react"
+import { getProducts } from "@/libs/features/product/productSlice"
+import { useAppDispatch, useAppSelector } from "@/libs/hooks"
+import React, { useEffect } from "react"
 
 const HomePage = () => {
+  const { products, loading } = useAppSelector((state) => state.app)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(getProducts())
+  }, [dispatch])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center font-bold text-3xl">
+        Loading...
+      </div>
+    )
+  }
+
   return (
     <div className="flex">
       <Sidebar />
@@ -11,6 +29,7 @@ const HomePage = () => {
         {products.map((product, index) => (
           <ProductCard
             key={index}
+            id={product.id}
             name={product.name}
             image={product.image}
             description={product.description}
@@ -24,41 +43,3 @@ const HomePage = () => {
 }
 
 export default HomePage
-
-const products = [
-  {
-    name: "Product 1",
-    image: "https://via.placeholder.com/300",
-    description: "This is a description for Product 1.",
-    price: 29.99,
-    stock: 10,
-  },
-  {
-    name: "Product 2",
-    image: "https://via.placeholder.com/300",
-    description: "This is a description for Product 2.",
-    price: 49.99,
-    stock: 5,
-  },
-  {
-    name: "Product 3",
-    image: "https://via.placeholder.com/300",
-    description: "This is a description for Product 3.",
-    price: 19.99,
-    stock: 15,
-  },
-  {
-    name: "Product 4",
-    image: "https://via.placeholder.com/300",
-    description: "This is a description for Product 4.",
-    price: 99.99,
-    stock: 2,
-  },
-  {
-    name: "Product 5",
-    image: "https://via.placeholder.com/300",
-    description: "This is a description for Product 5.",
-    price: 9.99,
-    stock: 25,
-  },
-]

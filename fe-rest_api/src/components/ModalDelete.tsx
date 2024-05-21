@@ -1,13 +1,25 @@
 import { Transition } from "@headlessui/react"
 import React from "react"
 import ModalButton from "./ui/ModalButton"
+import { useAppDispatch } from "@/libs/hooks"
+import { deleteProduct } from "@/libs/features/product/productSlice"
 
 interface Props {
   isOpen: boolean
+  productId: string
   closeModal: () => void
 }
 
-const ModalDelete = ({ isOpen, closeModal }: Props) => {
+const ModalDelete = ({ isOpen, closeModal, productId }: Props) => {
+  const dispatch = useAppDispatch()
+
+  const handleDelete = () => {
+    if (productId) {
+      dispatch(deleteProduct(productId))
+    }
+    closeModal()
+  }
+
   return (
     <>
       <Transition show={isOpen}>
@@ -26,7 +38,7 @@ const ModalDelete = ({ isOpen, closeModal }: Props) => {
               </h3>
 
               <div className="mt-5 px-11 flex flex-col gap-4">
-                <ModalButton color="blue" label="Yes" />
+                <ModalButton onClick={handleDelete} color="blue" label="Yes" />
                 <ModalButton onClick={closeModal} color="red" label="Cancel" />
               </div>
             </div>

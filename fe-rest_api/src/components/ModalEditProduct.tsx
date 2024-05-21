@@ -1,13 +1,43 @@
 import { Transition } from "@headlessui/react"
 import ModalButton from "./ui/ModalButton"
 import Input from "./ui/Input"
+import { useAppDispatch } from "@/libs/hooks"
+import { useState } from "react"
+import { updateProduct } from "@/libs/features/product/productSlice"
+import { Product } from "@/app/interface"
 
 export interface PropsModal {
   isOpen: boolean
   closeModal: () => void
+  product: Product
 }
 
-const ModalEditProduct = ({ isOpen, closeModal }: PropsModal) => {
+const ModalEditProduct = ({ isOpen, closeModal, product }: PropsModal) => {
+  const dispatch = useAppDispatch()
+
+  const [formData, setFormData] = useState({
+    id: product.id,
+    name: product.name,
+    image: product.image,
+    description: product.description,
+    price: product.price,
+    stock: product.stock,
+  })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    await dispatch(updateProduct(formData))
+    closeModal()
+  }
+
   return (
     <Transition show={isOpen}>
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-60">
@@ -24,18 +54,57 @@ const ModalEditProduct = ({ isOpen, closeModal }: PropsModal) => {
               Edit Product
             </h3>
 
-            <div className="mt-2 px-3 flex flex-col gap-3">
-              <Input type="text" label="Name" placeholder="enter name" />
-              <Input type="text" label="Image" placeholder="enter image" />
-              <Input type="text" label="Description" placeholder="enter description" />
-              <Input type="number" label="Price" placeholder="enter price" />
-              <Input type="number" label="Stock" placeholder="enter stock" />
-            </div>
+            <form onSubmit={handleSubmit} className="mt-2 px-3 flex flex-col gap-3">
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                type="text"
+                label="Name"
+                placeholder="Enter name"
+              />
+              <Input
+                name="image"
+                value={formData.image}
+                onChange={handleChange}
+                type="text"
+                label="Image"
+                placeholder="Enter image"
+              />
+              <Input
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                type="text"
+                label="Description"
+                placeholder="Enter description"
+              />
+              <Input
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                type="number"
+                label="Price"
+                placeholder="Enter price"
+              />
+              <Input
+                name="stock"
+                value={formData.stock}
+                onChange={handleChange}
+                type="number"
+                label="Stock"
+                placeholder="Enter stock"
+              />
 
-            <div className="mt-8 flex gap-3 px-3">
-              <ModalButton onClick={closeModal} color="red" label="Cancel" />
-              <ModalButton color="blue" label="Update" />
-            </div>
+              <ModalButton className="mt-5" type="submit" color="blue" label="Update" />
+            </form>
+
+            <ModalButton
+              className="mt-2 px-3"
+              onClick={closeModal}
+              color="red"
+              label="Cancel"
+            />
           </div>
         </Transition.Child>
       </div>
