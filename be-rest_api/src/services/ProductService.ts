@@ -2,6 +2,7 @@ import { Repository } from "typeorm"
 import { AppDataSource } from "../data-source"
 import { Request, Response } from "express"
 import { ProductEntity } from "../entities/ProductEntity"
+import { v2 as cloudinary } from "cloudinary"
 
 export default new (class ProductService {
   private readonly ProductRepository: Repository<ProductEntity> =
@@ -9,13 +10,29 @@ export default new (class ProductService {
 
   //? CREATE PRODUCT
   async createProduct(req: Request, res: Response) {
-    const { name, description, image, price, stock } = req.body
+    const { name, description, price, stock } = req.body
+    const image = req.file?.path
 
     try {
+      cloudinary.config({
+        cloud_name: process.env.ClOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+        secure: true,
+      })
+
+      let imageUrl
+      if (image) {
+        const cloudinaryResponse = await cloudinary.uploader.upload(image, {
+          folder: "rest-api-wicara",
+        })
+        imageUrl = cloudinaryResponse.secure_url
+      }
+
       const newProduct = this.ProductRepository.create({
         name,
         description,
-        image,
+        image: imageUrl || "",
         price,
         stock,
         user: res.locals.user,
@@ -72,14 +89,29 @@ export default new (class ProductService {
   async updatedProduct(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const { name, description, image, price, stock } = req.body
+      const { name, description, price, stock } = req.body
+      const image = req.file?.path
 
       const existedProduct = await this.ProductRepository.findOne({
         where: { id: Number(id) },
         relations: ["user"],
       })
-
       if (!existedProduct) return res.status(404).json({ Message: "Product Not Found" })
+
+      if (image) {
+        cloudinary.config({
+          cloud_name: process.env.ClOUDINARY_CLOUD_NAME,
+          api_key: process.env.CLOUDINARY_API_KEY,
+          api_secret: process.env.CLOUDINARY_API_SECRET,
+          secure: true,
+        })
+
+        const cloudinaryResponse = await cloudinary.uploader.upload(image, {
+          folder: "rest-api-wicara",
+        })
+
+        existedProduct.image = cloudinaryResponse.secure_url
+      }
 
       // perbarui data
       existedProduct.image = image
