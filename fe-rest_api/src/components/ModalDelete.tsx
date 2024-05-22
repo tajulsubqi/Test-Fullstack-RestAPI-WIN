@@ -13,10 +13,8 @@ interface Props {
 const ModalDelete = ({ isOpen, closeModal, productId }: Props) => {
   const dispatch = useAppDispatch()
 
-  const handleDelete = () => {
-    if (productId) {
-      dispatch(deleteProduct(productId))
-    }
+  const handleDeleteProduct = (productId: any) => {
+    dispatch(deleteProduct(productId))
     closeModal()
   }
 
@@ -38,7 +36,11 @@ const ModalDelete = ({ isOpen, closeModal, productId }: Props) => {
               </h3>
 
               <div className="mt-5 px-11 flex flex-col gap-4">
-                <ModalButton onClick={handleDelete} color="blue" label="Yes" />
+                <ModalButton
+                  onClick={() => handleDeleteProduct(productId)}
+                  color="blue"
+                  label="Yes"
+                />
                 <ModalButton onClick={closeModal} color="red" label="Cancel" />
               </div>
             </div>

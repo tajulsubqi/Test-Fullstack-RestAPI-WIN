@@ -13,6 +13,8 @@ const HomePage = () => {
     dispatch(getProducts())
   }, [dispatch])
 
+  console.log(products)
+
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center font-bold text-3xl">
@@ -26,17 +28,18 @@ const HomePage = () => {
       <Sidebar />
 
       <div className="grid grid-cols-3 gap-8 mx-auto my-8 flex-wrap">
-        {products.map((product, index) => (
-          <ProductCard
-            key={index}
-            id={product.id}
-            name={product.name}
-            image={product.image}
-            description={product.description}
-            price={product.price}
-            stock={product.stock}
-          />
-        ))}
+        {products &&
+          products.map((product, index) => (
+            <ProductCard
+              key={index}
+              id={product.id}
+              name={product.name}
+              image={product.image}
+              description={product.description}
+              price={product.price}
+              stock={product.stock}
+            />
+          ))}
       </div>
     </div>
   )

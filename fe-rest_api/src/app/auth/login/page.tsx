@@ -1,10 +1,42 @@
-import React from "react"
+"use client"
+import React, { useState } from "react"
 import AuthLayout from "../layout"
 import Input from "@/components/ui/Input"
 import Link from "next/link"
 import Image from "next/image"
+import { useAppDispatch } from "@/libs/hooks"
+import { loginUser } from "@/libs/features/auth/authSlice"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
 const Login = () => {
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
+
+  console.log("Form Data:", formData)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    await dispatch(loginUser(formData))
+    const token = localStorage.getItem("token")
+    if (!token) {
+      throw new Error("Invalid token")
+    }
+
+    toast.success("Login Successful!")
+
+    router.push("/home")
+  }
+
   return (
     <AuthLayout>
       <div
@@ -22,18 +54,32 @@ const Login = () => {
         </div>
 
         <div className="w-1/2 bg-white p-16 rounded-r-3xl">
-          <form action="">
+          <form onSubmit={handleSubmit}>
             <h1 className="text-3xl text-center font-bold mb-4">Login</h1>
-
             <div className="flex flex-col gap-5">
-              <Input type="text" label="Email" placeholder="enter email" />
-              <Input type="password" label="Password" placeholder="enter password" />
+              <Input
+                type="email"
+                name="email"
+                label="Email"
+                placeholder="enter email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              <Input
+                type="password"
+                name="password"
+                label="Password"
+                placeholder="enter password"
+                value={formData.password}
+                onChange={handleChange}
+              />
             </div>
-
-            <button className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-md duration-300 px-4 py-2 mt-8 rounded-full">
-              <Link href="/home">Login</Link>
+            <button
+              type="submit"
+              className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold text-md duration-300 px-4 py-2 mt-8 rounded-full"
+            >
+              Login
             </button>
-
             <p className="text-center mt-2 text-sm">
               Sign Up Now!
               <Link

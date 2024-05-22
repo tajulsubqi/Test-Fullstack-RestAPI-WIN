@@ -6,6 +6,7 @@ const nextConfig = {
       "upload.wikimedia.org",
       "cworld.id",
       "images.tokopedia.net",
+      "www.static-src.com",
     ],
   },
 }

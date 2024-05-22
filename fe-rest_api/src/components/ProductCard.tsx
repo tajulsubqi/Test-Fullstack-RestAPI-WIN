@@ -6,7 +6,15 @@ import ModalDelete from "./ModalDelete"
 import ModalButton from "./ui/ModalButton"
 import { Product } from "@/app/interface"
 
-const ProductCard = ({ id, name, image, description, price, stock }: Product) => {
+const ProductCard = ({
+  id,
+  name,
+  image,
+  description,
+  price,
+  stock,
+  onUpdateProduct,
+}: Product) => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState(false)
   const [isOpenModalDelete, setIsOpenModalDelete] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)

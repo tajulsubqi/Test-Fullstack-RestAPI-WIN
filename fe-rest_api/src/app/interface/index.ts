@@ -5,6 +5,7 @@ export interface Product {
   description: string
   price: number
   stock: number
+  onUpdateProduct?: () => void
 }
 
 export interface ProductState {
