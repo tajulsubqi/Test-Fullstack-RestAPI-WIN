@@ -65,7 +65,7 @@ const Sidebar = () => {
                   className="rounded-full"
                 />
                 <div>
-                  <p className="text-white">Welcome, {session.name}</p>
+                  <p className="text-white">{session.name}</p>
                   <p className="text-gray-400 text-sm">{session.email}</p>
                 </div>
               </div>

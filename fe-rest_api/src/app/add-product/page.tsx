@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/libs/hooks"
 import { addProduct } from "@/libs/features/product/productSlice"
 import { Product } from "../interface"
 import { useRouter } from "next/navigation"
+import ImageUpload from "@/components/ui/ImageUpload"
 
 const AddProduct = () => {
   const dispatch = useAppDispatch()
@@ -64,7 +65,7 @@ const AddProduct = () => {
             <p className="text-red-500 text-sm -mt-5">{error}</p>
           )}
 
-          <Input
+          {/* <Input
             name="image"
             onChange={handleChange}
             type="text"
@@ -73,7 +74,7 @@ const AddProduct = () => {
           />
           {error && error.includes("Image") && (
             <p className="text-red-500 text-sm -mt-5">{error}</p>
-          )}
+          )} */}
 
           <Input
             name="price"
@@ -96,6 +97,8 @@ const AddProduct = () => {
           {error && error.includes("Stock") && (
             <p className="text-red-500 text-sm -mt-5">{error}</p>
           )}
+
+          <ImageUpload />
 
           <div className="flex justify-end">
             <button

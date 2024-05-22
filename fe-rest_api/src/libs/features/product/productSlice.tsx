@@ -13,7 +13,7 @@ export const addProduct = createAsyncThunk(
         return rejectWithValue("Price must be greater than zero")
       if (productData.stock < 0) return rejectWithValue("Stock cannot be negative")
 
-      const res = await Api.post("/products", productData)
+      const res = await Api.post("/products", productData, {})
       console.log(res.data)
       return res.data
     } catch (error) {
@@ -25,7 +25,7 @@ export const addProduct = createAsyncThunk(
 // Fetch All Products
 export const getProducts = createAsyncThunk("products/getProducts", async () => {
   try {
-    const res = await Api.get("/products")
+    const res = await Api.get("/products", {})
     return res.data
   } catch (error) {
     console.log(error)

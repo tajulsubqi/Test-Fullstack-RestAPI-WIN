@@ -27,7 +27,7 @@ const HomePage = () => {
     <div className="flex">
       <Sidebar />
 
-      <div className="grid grid-cols-3 gap-8 mx-auto my-8 flex-wrap">
+      <div className="h-full grid grid-cols-3 gap-8 mx-auto my-8 flex-wrap">
         {products &&
           products.map((product, index) => (
             <ProductCard
