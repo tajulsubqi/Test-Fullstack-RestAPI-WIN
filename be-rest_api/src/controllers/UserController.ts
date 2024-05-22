@@ -13,4 +13,8 @@ export default new (class AuthController {
   allUser(req: Request, res: Response) {
     UserService.allUser(req, res)
   }
+
+  findByIdUser(req: Request, res: Response) {
+    UserService.findByIdUser(req, res)
+  }
 })()

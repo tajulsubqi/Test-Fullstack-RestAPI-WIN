@@ -14,10 +14,17 @@ export default new (class UserService {
     try {
       const { name, gender, email, password } = req.body
 
+      // Validasi inputan user
+      if (!name || !gender || !email || !password) {
+        return res.status(400).json({
+          Message: "All fields are required",
+        })
+      }
+
       const existingUser = await this.userRepository.findOneBy({ email })
       if (existingUser) {
         return res.status(400).json({
-          Message: "Email already exist",
+          Message: "Email already exists",
         })
       }
 
@@ -30,7 +37,7 @@ export default new (class UserService {
       })
 
       const saveUser = await this.userRepository.save(user)
-      return res.status(200).json({
+      return res.status(201).json({
         Message: "Register Success",
         data: saveUser,
       })
@@ -47,6 +54,13 @@ export default new (class UserService {
     try {
       const { email, password } = req.body
 
+      // Validasi inputan user
+      if (!email || !password) {
+        return res.status(400).json({
+          Message: "Email and password are required",
+        })
+      }
+
       const user = await this.userRepository.findOneBy({ email })
       if (!user) {
         return res.status(404).json({
@@ -58,7 +72,7 @@ export default new (class UserService {
       const isPasswordValid = await bcrypt.compare(password, user.password)
       if (!isPasswordValid) {
         return res.status(401).json({
-          Message: "password not valid",
+          Message: "Password not valid",
         })
       }
 
@@ -93,6 +107,19 @@ export default new (class UserService {
       return res.status(500).json({
         Message: error.message,
         Error: "Get All User Failed",
+      })
+    }
+  }
+
+  async findByIdUser(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      const user = await this.userRepository.findOneBy({ id: Number(id) })
+      return res.status(200).json(user)
+    } catch (error) {
+      return res.status(500).json({
+        Message: error.message,
+        Error: "Get User Failed",
       })
     }
   }

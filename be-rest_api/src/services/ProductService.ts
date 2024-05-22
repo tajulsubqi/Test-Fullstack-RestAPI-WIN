@@ -37,7 +37,10 @@ export default new (class ProductService {
   //? GET ALL
   async findAllProduct(req: Request, res: Response) {
     try {
-      const products = await this.ProductRepository.find()
+      const products = await this.ProductRepository.find({
+        where: { user: { id: res.locals.user.id } },
+        relations: ["user"],
+      })
       return res.status(200).json(products)
     } catch (error) {
       return res.status(500).json({
@@ -51,7 +54,10 @@ export default new (class ProductService {
   async findByIdProduct(req: Request, res: Response) {
     try {
       const { id } = req.params
-      const product = await this.ProductRepository.findOneBy({ id: Number(id) })
+      const product = await this.ProductRepository.findOne({
+        where: { id: Number(id) },
+        relations: ["user"],
+      })
 
       return res.status(200).json(product)
     } catch (error) {
@@ -68,9 +74,9 @@ export default new (class ProductService {
       const { id } = req.params
       const { name, description, image, price, stock } = req.body
 
-      const existedProduct = await this.ProductRepository.findOneBy({
-        id: Number(id),
-        user: res.locals.user,
+      const existedProduct = await this.ProductRepository.findOne({
+        where: { id: Number(id) },
+        relations: ["user"],
       })
 
       if (!existedProduct) return res.status(404).json({ Message: "Product Not Found" })
@@ -107,9 +113,9 @@ export default new (class ProductService {
         })
       }
 
-      const product = await this.ProductRepository.findOneBy({
-        id: productId,
-        user: res.locals.user,
+      const product = await this.ProductRepository.findOne({
+        where: { user: { id: res.locals.user.id }, id: productId },
+        relations: ["user"],
       })
 
       if (!product) {
