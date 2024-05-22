@@ -1,41 +1,57 @@
+"use client"
 import { Transition } from "@headlessui/react"
 import ModalButton from "./ui/ModalButton"
 import Input from "./ui/Input"
-import { useAppDispatch } from "@/libs/hooks"
 import { useState } from "react"
-import { updateProduct } from "@/libs/features/product/productSlice"
-import { Product } from "@/app/interface"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Api } from "@/libs/AxiosInstance"
+import toast from "react-hot-toast"
+import { ModalType } from "@/types/modalType"
+import ImageUpload from "./ui/ImageUpload"
 
-export interface PropsModal {
-  isOpen: boolean
-  closeModal: () => void
-  product: Product
-}
+const ModalEditProduct = ({ isOpen, closeModal, product }: ModalType) => {
+  const query = useQueryClient()
+  const [formData, setFormData] = useState(product)
 
-const ModalEditProduct = ({ isOpen, closeModal, product }: PropsModal) => {
-  const dispatch = useAppDispatch()
-
-  const [formData, setFormData] = useState({
-    id: product.id,
-    name: product.name,
-    image: product.image,
-    description: product.description,
-    price: product.price,
-    stock: product.stock,
+  const mutation = useMutation({
+    mutationFn: (data: FormData) => Api.put(`/product/${product.id}`, data),
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const handleImageChange = (image: File) => {
+    setFormData({ ...formData, image })
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await dispatch(updateProduct(formData))
-    closeModal()
+
+    const formDataWithImage = new FormData()
+    formDataWithImage.append("name", formData.name)
+    formDataWithImage.append("description", formData.description)
+    formDataWithImage.append("price", formData.price.toString())
+    formDataWithImage.append("stock", formData.stock.toString())
+    formDataWithImage.append("image", formData.image)
+
+    try {
+      await mutation.mutateAsync(formDataWithImage, {
+        onSuccess: () => {
+          toast.success("Product Updated!")
+          query.invalidateQueries()
+          closeModal()
+        },
+        onError: (error) => {
+          toast.error("Failed to update product")
+          console.error("Error updating product:", error)
+        },
+      })
+    } catch (error) {
+      toast.error("Failed to update product")
+      console.error("Error updating product:", error)
+    }
   }
 
   return (
@@ -64,14 +80,6 @@ const ModalEditProduct = ({ isOpen, closeModal, product }: PropsModal) => {
                 placeholder="Enter name"
               />
               <Input
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-                type="text"
-                label="Image"
-                placeholder="Enter image"
-              />
-              <Input
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
@@ -95,6 +103,8 @@ const ModalEditProduct = ({ isOpen, closeModal, product }: PropsModal) => {
                 label="Stock"
                 placeholder="Enter stock"
               />
+
+              <ImageUpload onChange={handleImageChange} />
 
               <ModalButton className="mt-5" type="submit" color="blue" label="Update" />
             </form>

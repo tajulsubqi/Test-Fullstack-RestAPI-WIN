@@ -1,7 +1,7 @@
-import { InputProps } from "@/app/interface/input"
+import { InputType } from "@/types/inputType"
 import React from "react"
 
-const Input = (Props: InputProps) => {
+const Input = (Props: InputType) => {
   const { type, label, placeholder, onClick, onChange, value, name, className } = Props
 
   return (

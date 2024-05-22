@@ -1,21 +1,24 @@
 import { Transition } from "@headlessui/react"
-import React from "react"
 import ModalButton from "./ui/ModalButton"
-import { useAppDispatch } from "@/libs/hooks"
-import { deleteProduct } from "@/libs/features/product/productSlice"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Api } from "@/libs/AxiosInstance"
+import toast from "react-hot-toast"
 
-interface Props {
-  isOpen: boolean
-  productId: string
-  closeModal: () => void
-}
+const ModalDelete = ({ isOpen, closeModal, product_id }: any) => {
+  const query = useQueryClient()
 
-const ModalDelete = ({ isOpen, closeModal, productId }: Props) => {
-  const dispatch = useAppDispatch()
+  const mutation = useMutation({
+    mutationFn: (id: number | undefined) => Api.delete(`product/${id}`),
+  })
 
-  const handleDeleteProduct = (productId: any) => {
-    dispatch(deleteProduct(productId))
-    closeModal()
+  const handleDeleteProduct = () => {
+    mutation.mutate(product_id, {
+      onSuccess() {
+        toast.success("Product Deleted!")
+        query.invalidateQueries()
+        closeModal()
+      },
+    })
   }
 
   return (
@@ -36,11 +39,7 @@ const ModalDelete = ({ isOpen, closeModal, productId }: Props) => {
               </h3>
 
               <div className="mt-5 px-11 flex flex-col gap-4">
-                <ModalButton
-                  onClick={() => handleDeleteProduct(productId)}
-                  color="blue"
-                  label="Yes"
-                />
+                <ModalButton onClick={handleDeleteProduct} color="blue" label="Yes" />
                 <ModalButton onClick={closeModal} color="red" label="Cancel" />
               </div>
             </div>

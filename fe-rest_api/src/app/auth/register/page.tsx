@@ -1,57 +1,43 @@
 "use client"
-import React, { useState } from "react"
 import AuthLayout from "../layout"
 import Image from "next/image"
 import Link from "next/link"
 import Input from "@/components/ui/Input"
 import Dropdown from "@/components/ui/Dropdown"
-import { useAppDispatch, useAppSelector } from "@/libs/hooks"
-import { registerUser } from "@/libs/features/auth/authSlice"
 import { useRouter } from "next/navigation"
-
-interface IFormData {
-  name: string
-  email: string
-  password: string
-  gender: string
-}
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Api, setAuthorization } from "@/libs/AxiosInstance"
+import toast from "react-hot-toast"
+import useAuth from "@/hooks/useAuth"
 
 const Register = () => {
-  const dispatch = useAppDispatch()
-  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({})
-  const { status, error } = useAppSelector((state) => state.auth)
+  const query = useQueryClient()
   const router = useRouter()
+  const { formData, setFormData, handleGenderChange } = useAuth()
 
-  const [formData, setFormData] = useState<IFormData>({
-    name: "",
-    email: "",
-    password: "",
-    gender: "",
+  const mutation = useMutation({
+    mutationFn: (data) => Api.post("/auth/register", data),
+    onSuccess: (response) => {
+      const token = response.data.token
+      setAuthorization(token)
+      localStorage.setItem("token", token)
+      query.invalidateQueries()
+      toast.success("Register Successful!")
+      router.push("/auth/login")
+    },
+    onError: (error) => {
+      toast.error("Register Failed")
+      console.log(error.message)
+    },
   })
-
-  const handleGenderChange = (gender: string) => {
-    setFormData({ ...formData, gender })
-  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(registerUser(formData))
-
-    const errors: { [key: string]: string } = {}
-    if (!formData.name) errors.name = "Name is required"
-    if (!formData.email) errors.email = "Email is required"
-    if (!formData.password) errors.password = "Password is required"
-    // Tambahkan validasi email menggunakan regex jika diperlukan
-
-    if (Object.keys(errors).length > 0) {
-      // Jika ada error, set state validationErrors dan stop submit
-      setValidationErrors(errors)
-      return
+    if (!formData.name || !formData.email || !formData.password || !formData.gender) {
+      return toast.error("Please fill in all required fields")
     }
-
-    router.push("/auth/login")
+    mutation.mutate(formData)
   }
-  console.log("Form Data:", formData)
 
   return (
     <AuthLayout>

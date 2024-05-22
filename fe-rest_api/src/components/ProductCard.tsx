@@ -4,31 +4,25 @@ import { useState } from "react"
 import ModalEditProduct from "./ModalEditProduct"
 import ModalDelete from "./ModalDelete"
 import ModalButton from "./ui/ModalButton"
-import { Product } from "@/app/interface"
+import { ProductType } from "@/types/productType"
 
-const ProductCard = ({
-  id,
-  name,
-  image,
-  description,
-  price,
-  stock,
-  onUpdateProduct,
-}: Product) => {
+const ProductCard = ({ id, name, image, description, price, stock }: ProductType) => {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState(false)
   const [isOpenModalDelete, setIsOpenModalDelete] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null)
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
 
-  const handleEditProduct = (product: Product) => {
+  const handleEditProduct = (product: ProductType) => {
     setSelectedProduct(product)
     setIsOpenModalEdit(true)
   }
 
-  const handleDeleteProduct = (productId: any) => {
-    setSelectedProductId(productId)
+  const handleDeleteProduct = (product_Id: any) => {
+    setSelectedProductId(product_Id)
     setIsOpenModalDelete(true)
   }
+
+  console.log(selectedProductId)
 
   return (
     <>
@@ -83,9 +77,10 @@ const ProductCard = ({
           closeModal={() => setIsOpenModalEdit(false)}
         />
       )}
+
       {selectedProductId && (
         <ModalDelete
-          productId={selectedProductId}
+          product_id={selectedProductId}
           isOpen={isOpenModalDelete}
           closeModal={() => setIsOpenModalDelete(false)}
         />

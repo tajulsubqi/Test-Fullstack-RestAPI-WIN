@@ -1,15 +1,16 @@
-export interface Product {
+
+export type ProductType = {
   id?: number
   name: string
-  image: string
+  image: any
   description: string
   price: number
   stock: number
   onUpdateProduct?: () => void
 }
 
-export interface ProductState {
-  products: Product[]
+export type ProductStateType = {
+  products: ProductType[]
   loading: boolean
   error: string | null
 }

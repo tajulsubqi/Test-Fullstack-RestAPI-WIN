@@ -1,27 +1,43 @@
-import { BsFileImage } from "react-icons/bs"
+import Image from "next/image"
+import React, { useState } from "react"
+import { FaCloudUploadAlt } from "react-icons/fa"
 
-interface Props {
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  value?: string
-}
+const ImageUpload = ({ onChange }: any) => {
+  const [image, setImage] = useState<File | null>(null)
 
-const ImageUpload = ({ onChange, value }: Props) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedImage = e.target.files ? e.target.files[0] : null
+    setImage(selectedImage)
+    onChange(selectedImage)
+  }
+
   return (
-    <div className="flex w-full flex-col items-center justify-center mt-4">
-      <label htmlFor="image" className="cursor-pointer">
+    <div className="flex flex-col items-center">
+      <label
+        htmlFor="image"
+        className="relative cursor-pointer flex flex-col items-center justify-center border-2 p-1 w-1/4  border-dashed border-gray-300 rounded-lg hover:bg-gray-100 transition duration-300"
+      >
+        <FaCloudUploadAlt className="text-4xl text-gray-400" />
+        <span className="text-sm leading-normal text-gray-500">Upload Image</span>
         <input
           type="file"
           id="image"
           accept="image/*"
-          onChange={onChange}
-          value={value}
-          className="hidden w-full"
+          onChange={handleImageChange}
+          className="hidden"
         />
-
-        <div className="border text-gray-500 border-gray-300 bg-slate-100 rounded-lg p-2 flex items-center justify-center">
-          <BsFileImage className="mr-2" /> Add Image
-        </div>
       </label>
+      {image && (
+        <div className="mt-4">
+          <Image
+            width={200}
+            height={200}
+            src={URL.createObjectURL(image)}
+            alt="Preview"
+            className="rounded-lg w-36 h-36 object-cover"
+          />
+        </div>
+      )}
     </div>
   )
 }

@@ -3,8 +3,9 @@ import { GrTableAdd } from "react-icons/gr"
 import { IoHome } from "react-icons/io5"
 import profile from "../../public/assets/profile.png"
 import Image from "next/image"
-import toast from "react-hot-toast"
 import { jwtDecode } from "jwt-decode"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 interface Session {
   email: string
@@ -14,16 +15,26 @@ interface Session {
 }
 
 const Sidebar = () => {
-  let session: Session | null = null
-  const token = localStorage.getItem("token")
-  if (token) {
-    session = jwtDecode(token)
-  }
+  const router = useRouter()
+
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token")
+      if (token) {
+        const decodedSession = jwtDecode<Session>(token)
+        setSession(decodedSession)
+      }
+    }
+  }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    toast.success("Logout Successful!")
-    window.location.reload()
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token")
+      setSession(null)
+      router.push("/auth/login")
+    }
   }
 
   return (

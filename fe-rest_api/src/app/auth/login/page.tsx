@@ -4,37 +4,38 @@ import AuthLayout from "../layout"
 import Input from "@/components/ui/Input"
 import Link from "next/link"
 import Image from "next/image"
-import { useAppDispatch } from "@/libs/hooks"
-import { loginUser } from "@/libs/features/auth/authSlice"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Api, setAuthorization } from "@/libs/AxiosInstance"
+import useAuth from "@/hooks/useAuth"
 
 const Login = () => {
-  const dispatch = useAppDispatch()
+  const query = useQueryClient()
   const router = useRouter()
+  const { formData, handleChange } = useAuth()
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const mutation = useMutation({
+    mutationFn: (data) => Api.post("/auth/login", data),
+    onSuccess: (response) => {
+      const { token } = response.data
+      setAuthorization(token)
+      localStorage.setItem("token", token)
+      query.invalidateQueries()
+      toast.success("Login Successful!")
+      router.push("/home")
+    },
+    onError: () => {
+      toast.error("Login Failed")
+    },
   })
-
-  console.log("Form Data:", formData)
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await dispatch(loginUser(formData))
-    const token = localStorage.getItem("token")
-    if (!token) {
-      throw new Error("Invalid token")
+    if (!formData.email || !formData.password) {
+      return toast.error("Please fill in all required fields")
     }
-
-    toast.success("Login Successful!")
-
-    router.push("/home")
+    mutation.mutate(formData)
   }
 
   return (
@@ -49,7 +50,7 @@ const Login = () => {
             alt="register"
             width={500}
             height={500}
-            className="w-full h-full rounded-l-3xl "
+            className="w-full h-full rounded-l-3xl"
           />
         </div>
 
@@ -61,7 +62,7 @@ const Login = () => {
                 type="email"
                 name="email"
                 label="Email"
-                placeholder="enter email"
+                placeholder="Enter email"
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -69,7 +70,7 @@ const Login = () => {
                 type="password"
                 name="password"
                 label="Password"
-                placeholder="enter password"
+                placeholder="Enter password"
                 value={formData.password}
                 onChange={handleChange}
               />

@@ -1,10 +1,10 @@
-export interface InputProps {
+export type InputType = {
   type: string
   label: string
   name?: string
   placeholder?: string
   onClick?: () => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  value?: string | number
+  value?: any
   className?: string
 }
