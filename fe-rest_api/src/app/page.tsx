@@ -1,9 +1,9 @@
-import HomePage from "./home/page"
+import Login from "./auth/login/page"
 
 export default function Home() {
   return (
     <div>
-      <HomePage />
+      <Login />
     </div>
   )
 }

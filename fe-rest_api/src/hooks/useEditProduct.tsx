@@ -9,7 +9,12 @@ const useEditProduct = (product: ProductType, closeModal: () => void) => {
   const [formData, setFormData] = useState(product)
 
   const mutation = useMutation({
-    mutationFn: (data: FormData) => Api.put(`/product/${product.id}`, data),
+    mutationFn: (data: FormData) =>
+      Api.put(`/product/${product.id}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }),
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

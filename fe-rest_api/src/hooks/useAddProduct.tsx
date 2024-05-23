@@ -18,7 +18,12 @@ const useAddProduct = () => {
   })
 
   const mutation = useMutation({
-    mutationFn: (data: FormData) => Api.post("/products", data, {}),
+    mutationFn: (data: FormData) =>
+      Api.post("/products", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }),
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
