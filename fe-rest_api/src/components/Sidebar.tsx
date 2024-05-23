@@ -9,10 +9,10 @@ const Sidebar = () => {
   const { session, handleLogout } = useSidebar()
 
   return (
-    <div className="h-screen sticky top-0 flex overflow-hidden bg-gray-100">
+    <div className="h-screen sticky top-0 bottom-0 flex rounded-br-3xl overflow-hidden bg-gray-100">
       {/* Sidebar */}
-      <div className="w-72 flex flex-col bg-gray-800">
-        <div className="h-16 flex justify-center items-center bg-gray-900">
+      <div className="w-[350px] flex flex-col bg-gray-800 rounded-tr-3xl">
+        <div className="h-16 rounded-tr-3xl flex justify-center items-center bg-gray-900">
           <span className="text-white text-xl mr-6 font-semibold">Sidebar</span>
         </div>
 

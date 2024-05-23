@@ -29,8 +29,12 @@ const HomePage = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
-      <div className="h-full grid grid-cols-3 gap-8 mx-auto my-8 flex-wrap">
+      <div>
+        <Sidebar />
+      </div>
+
+      <div className="h-full grid md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto mt-16 p-10 flex-wrap">
+        <h1 className="text-3xl absolute top-10 font-bold">Product List</h1>
         {data && data.length > 0 ? (
           data.map((product: ProductType) => (
             <ProductCard

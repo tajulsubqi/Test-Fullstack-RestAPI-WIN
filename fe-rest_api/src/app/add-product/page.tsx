@@ -9,9 +9,11 @@ const AddProduct = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
+      <div>
+        <Sidebar />
+      </div>
 
-      <div className="mx-auto mt-10 p-5 w-1/2">
+      <div className="mx-auto mt-10 p-10 w-1/2">
         <h1 className="text-3xl text-center font-bold">Add Product</h1>
         <form
           onSubmit={handleSubmit}
