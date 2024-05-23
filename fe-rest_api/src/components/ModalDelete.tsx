@@ -1,25 +1,9 @@
 import { Transition } from "@headlessui/react"
 import ModalButton from "./ui/ModalButton"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Api } from "@/libs/AxiosInstance"
-import toast from "react-hot-toast"
+import useDeleteProduct from "@/hooks/useDeleteProduct"
 
 const ModalDelete = ({ isOpen, closeModal, product_id }: any) => {
-  const query = useQueryClient()
-
-  const mutation = useMutation({
-    mutationFn: (id: number | undefined) => Api.delete(`product/${id}`),
-  })
-
-  const handleDeleteProduct = () => {
-    mutation.mutate(product_id, {
-      onSuccess() {
-        toast.success("Product Deleted!")
-        query.invalidateQueries()
-        closeModal()
-      },
-    })
-  }
+  const { handleDeleteProduct } = useDeleteProduct({ product_id, closeModal })
 
   return (
     <>

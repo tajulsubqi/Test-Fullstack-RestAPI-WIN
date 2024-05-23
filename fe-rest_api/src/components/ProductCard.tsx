@@ -1,28 +1,22 @@
 "use client"
 import Image from "next/image"
-import { useState } from "react"
 import ModalEditProduct from "./ModalEditProduct"
 import ModalDelete from "./ModalDelete"
 import ModalButton from "./ui/ModalButton"
 import { ProductType } from "@/types/productType"
+import useProductCard from "@/hooks/useProductCard"
 
 const ProductCard = ({ id, name, image, description, price, stock }: ProductType) => {
-  const [isOpenModalEdit, setIsOpenModalEdit] = useState(false)
-  const [isOpenModalDelete, setIsOpenModalDelete] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null)
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
-
-  const handleEditProduct = (product: ProductType) => {
-    setSelectedProduct(product)
-    setIsOpenModalEdit(true)
-  }
-
-  const handleDeleteProduct = (product_Id: any) => {
-    setSelectedProductId(product_Id)
-    setIsOpenModalDelete(true)
-  }
-
-  console.log(selectedProductId)
+  const {
+    isOpenModalEdit,
+    setIsOpenModalEdit,
+    isOpenModalDelete,
+    setIsOpenModalDelete,
+    selectedProduct,
+    selectedProductId,
+    handleEditProduct,
+    handleDeleteProduct,
+  } = useProductCard()
 
   return (
     <>

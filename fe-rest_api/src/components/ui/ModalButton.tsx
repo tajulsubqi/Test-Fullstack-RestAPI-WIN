@@ -1,14 +1,7 @@
+import { ModalButtonType } from "@/types/modalButtonType"
 import React from "react"
 
-interface Props {
-  label: string
-  color: string
-  className?: string
-  type?: "button" | "submit" | "reset"
-  onClick?: () => void
-}
-
-const ModalButton = ({ label, color, type, className, onClick }: Props) => {
+const ModalButton = ({ label, color, type, className, onClick }: ModalButtonType) => {
   return (
     <div className={` w-full ${className}`}>
       <button

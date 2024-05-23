@@ -2,57 +2,15 @@
 import { Transition } from "@headlessui/react"
 import ModalButton from "./ui/ModalButton"
 import Input from "./ui/Input"
-import { useState } from "react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Api } from "@/libs/AxiosInstance"
-import toast from "react-hot-toast"
 import { ModalType } from "@/types/modalType"
 import ImageUpload from "./ui/ImageUpload"
+import useEditProduct from "@/hooks/useEditProduct"
 
 const ModalEditProduct = ({ isOpen, closeModal, product }: ModalType) => {
-  const query = useQueryClient()
-  const [formData, setFormData] = useState(product)
-
-  const mutation = useMutation({
-    mutationFn: (data: FormData) => Api.put(`/product/${product.id}`, data),
-  })
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
-
-  const handleImageChange = (image: File) => {
-    setFormData({ ...formData, image })
-  }
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    const formDataWithImage = new FormData()
-    formDataWithImage.append("name", formData.name)
-    formDataWithImage.append("description", formData.description)
-    formDataWithImage.append("price", formData.price.toString())
-    formDataWithImage.append("stock", formData.stock.toString())
-    formDataWithImage.append("image", formData.image)
-
-    try {
-      await mutation.mutateAsync(formDataWithImage, {
-        onSuccess: () => {
-          toast.success("Product Updated!")
-          query.invalidateQueries()
-          closeModal()
-        },
-        onError: (error) => {
-          toast.error("Failed to update product")
-          console.error("Error updating product:", error)
-        },
-      })
-    } catch (error) {
-      toast.error("Failed to update product")
-      console.error("Error updating product:", error)
-    }
-  }
+  const { formData, handleChange, handleImageChange, handleSubmit } = useEditProduct(
+    product,
+    closeModal,
+  )
 
   return (
     <Transition show={isOpen}>

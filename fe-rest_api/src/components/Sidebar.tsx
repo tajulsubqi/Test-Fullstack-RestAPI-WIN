@@ -3,39 +3,10 @@ import { GrTableAdd } from "react-icons/gr"
 import { IoHome } from "react-icons/io5"
 import profile from "../../public/assets/profile.png"
 import Image from "next/image"
-import { jwtDecode } from "jwt-decode"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-
-interface Session {
-  email: string
-  password: string
-  name: string
-  id: number
-}
+import useSidebar from "@/hooks/useSidebar"
 
 const Sidebar = () => {
-  const router = useRouter()
-
-  const [session, setSession] = useState<Session | null>(null)
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token")
-      if (token) {
-        const decodedSession = jwtDecode<Session>(token)
-        setSession(decodedSession)
-      }
-    }
-  }, [])
-
-  const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("token")
-      setSession(null)
-      router.push("/auth/login")
-    }
-  }
+  const { session, handleLogout } = useSidebar()
 
   return (
     <div className="h-screen sticky top-0 flex overflow-hidden bg-gray-100">
